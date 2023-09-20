@@ -10,20 +10,6 @@ function LandingPage() {
     setShowSignIn(!showSignIn);
   };
 
-  // Form variables
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSignIn = (e) => {
-    e.preventDefault();
-
-    // Call API to sign in user
-
-    // Reset form
-
-    // Reset error messages
-  };
-
   return (
     <>
       {/* Modal */}
@@ -104,14 +90,11 @@ function ModalSignIn({ showModal, setShowModal, title }) {
         password: password,
       };
 
-      await axios({
-        method: "POST",
-        url: `/api/users/login`,
-        data: body,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
       // Reset form after successful submission
       setEmail("");
@@ -121,6 +104,9 @@ function ModalSignIn({ showModal, setShowModal, title }) {
       setEmailError("");
       setPasswordError("");
       setStatusMessage("");
+
+      console.log("Login success");
+      console.log(response.data);
 
       setShowModal(false);
     } catch (error) {
