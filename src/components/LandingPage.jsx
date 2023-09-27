@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 import cloudBg from "../images/cloudBackground.png";
 
 function LandingPage() {
@@ -10,6 +12,14 @@ function LandingPage() {
     setShowSignIn(!showSignIn);
   };
 
+  const navigate = useNavigate();
+  const handleLoginSuccess = () => {
+    navigate("/home");
+  };
+
+
+
+
   return (
     <>
       {/* Modal */}
@@ -17,6 +27,7 @@ function LandingPage() {
         title="Sign In"
         showModal={showSignIn}
         setShowModal={triggerModalSignIn}
+        handleLoginSuccess={handleLoginSuccess}
       />
 
       <div 
@@ -48,7 +59,7 @@ function LandingPage() {
   );
 }
 
-function ModalSignIn({ showModal, setShowModal, title }) {
+function ModalSignIn({ showModal, setShowModal, title, handleLoginSuccess }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [statusMessage, setStatusMessage] = React.useState("");
@@ -93,9 +104,16 @@ function ModalSignIn({ showModal, setShowModal, title }) {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, body, {
       headers: {
         'Content-Type': 'application/json',
-      },
-    });
+      }});
+      
+      const cookies = new Cookies();
+      cookies.set("token", response.data.token, {
+        path: "/",
+      });
 
+      // Navigate to home page
+      handleLoginSuccess();
+      
       // Reset form after successful submission
       setEmail("");
       setPassword("");
