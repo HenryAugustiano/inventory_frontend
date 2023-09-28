@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
+import '../styles/LandingPage.css';
 import cloudBg from "../images/cloudBackground.png";
 
 function LandingPage() {
@@ -31,27 +32,21 @@ function LandingPage() {
       />
 
       <div 
-      className="flex justify-center items-center h-screen"
-      style={{ 
-        backgroundImage: `url(${cloudBg})`, 
+      className="flex-container"
+      style={{
+        backgroundImage: `url(${cloudBg})`,
         backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
+        backgroundRepeat: 'no-repeat'
       }}
       >
-        <div className="bg-white p-8 rounded-lg shadow-md flex flex-col items-center text-center">
-          <h1 className="text-3xl font-bold mb-4">
-            Welcome to Cloud Inventory
-          </h1>
-          <p className="text-gray-600">Your professional inventory storage.</p>
-          <div className="mt-8">
-            <button className="bg-green-500 text-white px-4 py-2 rounded-md mr-4"
-              onClick={() => triggerModalSignIn()}
-            >
+        <div className="card">
+          <h1 className="title">Welcome to Cloud Inventory</h1>
+          <p className="subtitle">Your professional inventory storage.</p>
+          <div className="buttons-container">
+            <button className="sign-in-button" onClick={() => triggerModalSignIn()}>
               Sign In
             </button>
-            <button className="bg-sky-500 text-white px-4 py-2 rounded-md">
-              Create Account
-            </button>
+            <button className="create-account-button">Create Account</button>
           </div>
         </div>
       </div>

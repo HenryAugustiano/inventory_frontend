@@ -1,0 +1,57 @@
+/* Container */
+.flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Card */
+.card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Title */
+.title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+/* Subtitle */
+.subtitle {
+  color: #4b5563;
+}
+
+/* Buttons Container */
+.buttons-container {
+  margin-top: 2rem;
+}
+
+/* Sign In Button */
+.sign-in-button {
+  background-color: #34d399;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+/* Create Account Button */
+.create-account-button {
+  background-color: #93c5fd;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
