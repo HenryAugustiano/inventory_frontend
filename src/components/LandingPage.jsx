@@ -12,7 +12,6 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 
 function LandingPage() {
-
   const navigate = useNavigate();
   //Sign In Modal
   const [showSignIn, setShowSignIn] = useState(false);
@@ -22,6 +21,13 @@ function LandingPage() {
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  //Sign Up Modal
+  const [showSignUp, setShowSignUp] = useState(false);
+  const handleCloseSignUp = () => setShowSignUp(false);
+  const handleShowSignUp = () => setShowSignUp(true);
+  const [emailSignUp, setEmailSignUp] = React.useState("");
+  const [passwordSignUp, setPasswordSignUp] = React.useState("");
 
   const handleSubmitSignIn = async (e) => {
     try {
@@ -34,10 +40,9 @@ function LandingPage() {
       }
       setValidated(true);
 
-      if(!validated){
+      if (!validated) {
         return;
       }
-        
 
       let body = {
         email: email,
@@ -74,9 +79,52 @@ function LandingPage() {
       setPassword("");
     }
   };
+  const handleSubmitSignUp = async (e) => {
+    try {
+      e.preventDefault();
+      const form = e.currentTarget;
 
+      if (form.checkValidity() === false) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      setValidated(true);
+
+      if (!validated) {
+        return;
+      }
+
+      let body = {
+        email: emailSignUp,
+        password: passwordSignUp,
+      };
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/users/register`,
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+
+      console.log("Register success");
+      console.log(response.data);
+
+      setShowSignUp(false);
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      console.error("An error occurred:", error);
+      setEmail("");
+      setPassword("");
+    }
+  };
   return (
     <>
+      {/* Sign In Modal */}
       <Modal
         show={showSignIn}
         onHide={handleCloseSignIn}
@@ -121,7 +169,51 @@ function LandingPage() {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* Sign Up Modal */}
+      <Modal
+        show={showSignUp}
+        onHide={handleCloseSignUp}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Sign Up</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form noValidate validated={validated}>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={emailSignUp}
+                onChange={(e) => setEmailSignUp(e.target.value)}
+                required
+              />
+            </Form.Group>
 
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={passwordSignUp}
+                onChange={(e) => setPasswordSignUp(e.target.value)}
+                required
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseSignUp}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSubmitSignUp}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div
         className="flex-container"
         style={{
@@ -140,7 +232,12 @@ function LandingPage() {
             >
               Sign In
             </button>
-            <button className="create-account-button">Create Account</button>
+            <button 
+              className="create-account-button"
+              onClick={() => handleShowSignUp()}
+            >
+              Create Account
+            </button>
           </div>
         </div>
       </div>
