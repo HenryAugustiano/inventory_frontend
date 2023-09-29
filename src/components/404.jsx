@@ -13,7 +13,7 @@ const NotFound = () => {
       <button 
         className="home-button"
         onClick={() => {
-          navigate("/");
+          navigate("/home");
         }}
       >
         Take Me Home
