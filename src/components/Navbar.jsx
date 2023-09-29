@@ -6,6 +6,7 @@ import Cookies from "universal-cookie";
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Logo from '../images/box.png';
 import '../styles/Navbar.css'
 
 const NavbarUser = ({ userEmail }) => {
@@ -38,7 +39,16 @@ const NavbarUser = ({ userEmail }) => {
     <>
       <Navbar expand="lg" bg="dark" data-bs-theme="dark">
         <Container fluid>
-          <Navbar.Brand href="#">Navbar scroll</Navbar.Brand>
+          <Navbar.Brand href="#">
+            <img
+              src={Logo}
+              alt="Logo"
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+            />
+          </Navbar.Brand>
+
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
             <Nav
