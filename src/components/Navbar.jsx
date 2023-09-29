@@ -39,7 +39,7 @@ const NavbarUser = ({ userEmail }) => {
     <>
       <Navbar expand="lg" bg="dark" data-bs-theme="dark">
         <Container fluid>
-          <Navbar.Brand href="#">
+          <Navbar.Brand>
             <img
               src={Logo}
               alt="Logo"
