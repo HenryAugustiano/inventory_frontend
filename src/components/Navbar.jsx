@@ -1,7 +1,7 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
@@ -10,8 +10,9 @@ import Logo from '../images/box.png';
 import '../styles/Navbar.css'
 
 const NavbarUser = ({ userEmail }) => {
+  const location = useLocation();
   const navigate = useNavigate();
-
+  const pathName = location.pathname;
   //Buttons handler
   const handleHome = () => {
     navigate("/home");
@@ -56,9 +57,9 @@ const NavbarUser = ({ userEmail }) => {
               style={{ maxHeight: "100px" }}
               navbarScroll
             >
-              <Nav.Link onClick={handleHome}>Home</Nav.Link>
-              <Nav.Link onClick={handleInventory}>Inventory</Nav.Link>
-              <Nav.Link onClick={handleProfile}>Profile</Nav.Link>
+              <Nav.Link onClick={handleHome} className={pathName === "/home" ? "active" : ""}>Home</Nav.Link>
+              <Nav.Link onClick={handleInventory} className={pathName === "/inventory" ? "active" : ""}>Inventory</Nav.Link>
+              <Nav.Link onClick={handleProfile} className={pathName === "/profile" ? "active" : ""}>Profile</Nav.Link>
             </Nav>
             <Navbar.Collapse className="justify-content-end">
               <Navbar.Text>
