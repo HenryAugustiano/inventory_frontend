@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import "../styles/LandingPage.css";
-import bg from "../images/bg.jpg";
+import bg from "../images/cloud.png";
 
 //Bootstrap
 import Button from "react-bootstrap/Button";
