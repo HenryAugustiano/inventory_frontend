@@ -193,7 +193,7 @@ function LandingPage() {
             Close
           </Button>
           <Button variant="primary" onClick={handleSubmitSignIn}>
-            Submit
+            Sign In
           </Button>
         </Modal.Footer>
       </Modal>
@@ -247,7 +247,7 @@ function LandingPage() {
           )}
           {!success && !loading && (
             <Button variant="primary" onClick={handleSubmitSignUp}>
-              Submit
+              Sign Up
             </Button>
           )}
         </Modal.Footer>
