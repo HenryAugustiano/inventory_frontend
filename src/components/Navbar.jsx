@@ -72,7 +72,7 @@ const NavbarUser = ({ userEmail }) => {
       {/* Sign Out Modal */}
       <Modal show={showSignOut} onHide={handleCloseSignOut} centered>
         <Modal.Header closeButton>
-          <Modal.Title className="modalSignOut">Modal heading</Modal.Title>
+          <Modal.Title className="modalSignOut" style={{color: 'red'}}>Sign Out</Modal.Title>
         </Modal.Header>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseSignOut}>
