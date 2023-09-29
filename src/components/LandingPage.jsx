@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import "../styles/LandingPage.css";
-import cloudBg from "../images/cloudBackground.png";
+import bg from "../images/bg.jpg";
 
 //Bootstrap
 import Button from "react-bootstrap/Button";
@@ -257,7 +257,7 @@ function LandingPage() {
       <div
         className="flex-container"
         style={{
-          backgroundImage: `url(${cloudBg})`,
+          backgroundImage: `url(${bg})`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
         }}
