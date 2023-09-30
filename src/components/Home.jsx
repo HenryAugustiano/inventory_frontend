@@ -43,7 +43,7 @@ const Home = () => {
           <InventoryChart />
         </Col>
         <Col>
-          <h2 style={{textAlign: 'center'}}>Find Nearby Business</h2>
+          <h2 style={{textAlign: 'center'}}>Find Nearby Buyer </h2>
             <NearbyBusiness />
         </Col>
       </Row>
