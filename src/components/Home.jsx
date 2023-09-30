@@ -3,6 +3,9 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import NavbarUser from './Navbar';
 import { useNavigate } from "react-router-dom";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import InventoryChart from "./InventoryChart";
+import NearbyBusiness from './NearbyBusiness';
 
 
 const Home = () => {
@@ -33,14 +36,17 @@ const Home = () => {
   return (
     <div>
       <NavbarUser userEmail={data.email} />
-      <div className="container">
-        <div className="row">
-          <div className="col-12">
-            <h1>Home</h1>
-            <p>Welcome {data.email}</p>
-          </div>
-        </div>
-      </div>
+      <br/>
+      <Row>
+        <Col>
+          <h2 style={{textAlign: 'center'}}>Inventory Trends</h2>
+          <InventoryChart />
+        </Col>
+        <Col>
+          <h2 style={{textAlign: 'center'}}>Find Nearby Business</h2>
+            <NearbyBusiness />
+        </Col>
+      </Row>
 
     </div>
   );
