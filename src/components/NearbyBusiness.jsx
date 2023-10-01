@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import axios from "axios";
+import { Col, Form, Button, Table } from 'react-bootstrap';
 
 const NearbyBusiness = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,13 +59,32 @@ const NearbyBusiness = () => {
 
 
       {/* Display the fetched businesses */}
-      <ul>
-        {businesses.map((business, index) => (
-          <li key={index}>
-            <strong>{business.name}</strong> - Website: {business.website}
-          </li>
-        ))}
-      </ul>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Website</th>
+          </tr>
+        </thead>
+        <tbody>
+          {businesses.map((business, index) => (
+            <tr key={index}>
+              <td>{business.name}</td>
+              <td>
+                {
+                  business.website ? (
+                    <a href={business.website} target="_blank" rel="noreferrer">
+                       [CLICK ME]
+                    </a>
+                  ) : (
+                    "N/A"
+                  )
+                }
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </Col>
   );
 };
