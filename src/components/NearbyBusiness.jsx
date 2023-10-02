@@ -76,16 +76,16 @@ const NearbyBusiness = () => {
         />
 
         {loading ? (
-          <div class="banter-loader">
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
-            <div class="banter-loader__box"></div>
+          <div className="banter-loader">
+            <div className="banter-loader__box"></div>
+            <div className="banter-loader__box"></div>
+            <div className="banter-loader__box"></div>
+            <div className="banter-loader__box"></div>
+            <div className="banter-loader__box"></div>
+            <div className="banter-loader__box"></div>
+            <div className="banter-loader__box"></div>
+            <div className="banter-loader__box"></div>
+            <div className="banter-loader__box"></div>
           </div>
         ) : (
           <button type="submit" onClick={handleSearch}>
