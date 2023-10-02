@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Col, Form, Button, Table } from 'react-bootstrap';
+import { Col, Table } from 'react-bootstrap';
+import '../styles/SearchButton.css'
 
 const NearbyBusiness = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [businesses, setBusinesses] = useState([]);
   const [lati, setLati] = useState("");
   const [lngi, setLngi] = useState("");
+  const [loading, setLoading] = useState(false);
   // Get User's location to feed into the API
   useEffect(() => {
     if (navigator.geolocation) {
@@ -28,6 +30,7 @@ const NearbyBusiness = () => {
   
 
   const handleSearch = async () => {
+    setLoading(true);
     try {
       //https://rapidapi.com/letscrape-6bRBa3QguO5/api/local-business-data
       const options = {
@@ -55,6 +58,7 @@ const NearbyBusiness = () => {
         website: business.website
       }));
       setBusinesses(extractedBusinesses);
+      setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -63,21 +67,32 @@ const NearbyBusiness = () => {
   return (
     <Col>
       <br />
-      <Form className="d-flex align-items-center">
-        <Form.Group controlId="searchTerm" className="mb-0 me-2">
-          <Form.Label className="visually-hidden">Search for businesses:</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Search businesses (e.g. pizza)"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </Form.Group>
-        <Button variant="outline-success" onClick={handleSearch}>
-          Search
-        </Button>
-      </Form>
+      <div className="search">
+        <input
+          placeholder="Search..."
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
 
+        {loading ? (
+          <div class="banter-loader">
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+            <div class="banter-loader__box"></div>
+          </div>
+        ) : (
+          <button type="submit" onClick={handleSearch}>
+            Search
+          </button>
+        )}
+      </div>
 
       {/* Display the fetched businesses */}
       <Table striped bordered hover>
@@ -92,15 +107,13 @@ const NearbyBusiness = () => {
             <tr key={index}>
               <td>{business.name}</td>
               <td>
-                {
-                  business.website ? (
-                    <a href={business.website} target="_blank" rel="noreferrer">
-                       [CLICK ME]
-                    </a>
-                  ) : (
-                    "N/A"
-                  )
-                }
+                {business.website ? (
+                  <a href={business.website} target="_blank" rel="noreferrer">
+                    [CLICK ME]
+                  </a>
+                ) : (
+                  "N/A"
+                )}
               </td>
             </tr>
           ))}
