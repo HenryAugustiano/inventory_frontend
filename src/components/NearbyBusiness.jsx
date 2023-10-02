@@ -60,6 +60,7 @@ const NearbyBusiness = () => {
       setBusinesses(extractedBusinesses);
       setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error(error);
     }
   };
