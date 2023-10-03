@@ -12,6 +12,8 @@ const InventoryList = () => {
 
   //call the api
   const [data, setData] = useState([]);
+  const [inventoryData, setInventoryData] = useState([]);
+  const [inventoryTransactions, setInventoryTransactions] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,29 +23,23 @@ const InventoryList = () => {
             'Authorization': `Bearer ${token}`
           }
         });
+
+        const inventoryresult = await axios.get(`${process.env.REACT_APP_API_URL}/inventory/getInventory`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
         setData(result.data);
+        setInventoryData(inventoryresult.data.inventory.items);
+        setInventoryTransactions(inventoryresult.data.inventory.inventoryTransactions);
       } catch (error) {
         navigate("/"); //redirect to landing page
       }
     };
     fetchData();
-  }, [token]); //re-run the effect if the token changes
+  }, [token]); //re-run the effect if the tsoken changes
 
-  const [items, setItems] = useState([
-    { id: 1, name: "Item 1", quantity: 5 },
-    { id: 2, name: "Item 2", quantity: 10 },
-    // Add more items as needed
-  ]);
-
-  const handleAdjustQuantity = (id, increment) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(0, item.quantity + increment) }
-          : item
-      )
-    );
-  };
 
   return (
     <>
@@ -51,34 +47,27 @@ const InventoryList = () => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Name</th>
+            <th>Item Name</th>
             <th>Quantity</th>
-            <th>Adjust Quantity</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.name}</td>
-              <td>{item.quantity}</td>
-              <td>
-                <Button
-                  variant="success"
-                  onClick={() => handleAdjustQuantity(item.id, 1)}
-                >
-                  +
-                </Button>{" "}
-                <Button
-                  variant="danger"
-                  onClick={() => handleAdjustQuantity(item.id, -1)}
-                >
-                  -
-                </Button>
-              </td>
+          {inventoryData ? (
+            inventoryData.map((item) => (
+              <tr key={item.itemName}>
+                <td>{item.itemName}</td>
+                <td>{item.itemQuantity}</td>
+                <td>
+                  <Button onClick={() => console.log(item)}>Info</Button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3">Loading...</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </Table>
     </>
