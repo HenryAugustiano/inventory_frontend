@@ -7,8 +7,16 @@ const SellItemModal = ({ showModal, handleClose, handleSellItem, item }) => {
   const handleSell = async () => {
     // Validate that itemQuantity is a positive integer
     const quantityInt = parseInt(itemQuantity, 10);
+
     if (isNaN(quantityInt) || quantityInt <= 0) {
       alert('Please enter a valid positive integer for item quantity.');
+      return;
+    }
+
+    // Check if the user has enough of the item to sell
+    if (quantityInt > item.itemQuantity) {
+      alert('You do not have enough of this item to sell.');
+      setItemQuantity('');
       return;
     }
 
