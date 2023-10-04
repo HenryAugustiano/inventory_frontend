@@ -39,8 +39,8 @@ const Home = () => {
       <br/>
       <Row>
         <Col>
-          <h2 style={{textAlign: 'center'}}>Inventory Trends</h2>
-          <InventoryChart />
+          <h2 style={{textAlign: 'center'}}>Top Item Of The Month</h2>
+          <InventoryChart token={token} />
         </Col>
         <Col>
           <h2 style={{textAlign: 'center'}}>Find Nearby Buyer </h2>
