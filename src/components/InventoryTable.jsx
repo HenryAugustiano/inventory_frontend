@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faCircleInfo, faEdit, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 
-const InventoryTable = ({inventoryData, handleShowInfoModal, handleDeleteItem, handleShowEditModal }) => {
+const InventoryTable = ({inventoryData, handleShowInfoModal, handleDeleteItem, handleShowEditModal, handleShowSellModal }) => {
   const renderTooltip = (text) => (
     <Tooltip id="button-tooltip">
       {text}
@@ -40,7 +40,7 @@ const InventoryTable = ({inventoryData, handleShowInfoModal, handleDeleteItem, h
                   </Button>
                 </OverlayTrigger>{' '}
                 <OverlayTrigger placement="top" overlay={renderTooltip('Sell Item')}>
-                  <Button variant="success">
+                  <Button variant="success" onClick={() => handleShowSellModal(item)}>
                     <FontAwesomeIcon icon={faShoppingCart} />
                   </Button>
                 </OverlayTrigger>{' '}
@@ -52,11 +52,8 @@ const InventoryTable = ({inventoryData, handleShowInfoModal, handleDeleteItem, h
               </td>
             </tr>
           ))
-        ) : (
-          <tr>
-            <td colSpan="3">Loading...</td>
-          </tr>
-        )}
+        ) : (null)}
+        {/* Add Spinner later */}
       </tbody>
     </Table>
   );

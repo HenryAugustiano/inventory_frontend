@@ -8,6 +8,7 @@ import InventoryTable from './InventoryTable';
 import AddItemModal from './modals/AddItemModa';
 import InfoItemModal from './modals/InfoItemModal';
 import EditItemModal from './modals/EditItemModal';
+import SellItemModal from './modals/SellItemModal';
 
 const InventoryList = () => {
   const navigate = useNavigate();
@@ -42,6 +43,19 @@ const InventoryList = () => {
   const handleCloseEditModal = () => {
     setSelectedItem(null);
     setShowEditModal(false);
+  };
+
+  //Sell Item Modal
+  const [showSellModal, setShowSellModal] = useState(false);
+
+  const handleShowSellModal = (item) => {
+    setSelectedItem(item);
+    setShowSellModal(true);
+  };
+
+  const handleCloseSellModal = () => {
+    setSelectedItem(null);
+    setShowSellModal(false);
   };
 
   const [loading, setLoading] = useState(false);
@@ -102,6 +116,23 @@ const InventoryList = () => {
     }
   };
 
+  const handleSellItem = async (itemName, itemSold) => {
+    try {
+      setLoading(true);
+      const result = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/sellItem`, { itemName, itemSold }, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      setLoading(false);
+      setReload(!reload);
+    } catch (error) {
+      setLoading(false);
+      console.log('An error occured', error);
+    }
+  };
+
   //call the api
   const [data, setData] = useState([]);
   const [inventoryData, setInventoryData] = useState([]);
@@ -144,11 +175,12 @@ const InventoryList = () => {
           </Button>
         </div>
       </div>
-      <InventoryTable inventoryData={inventoryData} handleDeleteItem={handleDeleteItem} handleShowInfoModal={handleShowInfoModal} handleShowEditModal={handleShowEditModal} />
+      <InventoryTable inventoryData={inventoryData} handleDeleteItem={handleDeleteItem} handleShowInfoModal={handleShowInfoModal} handleShowEditModal={handleShowEditModal} handleShowSellModal={handleShowSellModal} />
       {/* Modals */}
       <AddItemModal showModal={showModal} handleClose={handleClose} handleAddItem={handleAddItem} />
       <InfoItemModal showModal={showInfoModal} handleClose={handleCloseInfoModal} item={selectedItem} inventoryTransactions={inventoryTransactions} />
       <EditItemModal showModal={showEditModal} handleClose={handleCloseEditModal} item={selectedItem} handleEditItem={handleEditItem} />
+      <SellItemModal showModal={showSellModal} handleClose={handleCloseSellModal} item={selectedItem} handleSellItem={handleSellItem} />
     </>
   );
 };
