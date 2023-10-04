@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Button, FormControl } from "react-bootstrap";
 import NavbarUser from "./Navbar";
 import InventoryTable from './InventoryTable';
 import AddItemModal from './modals/AddItemModa';
 import InfoItemModal from './modals/InfoItemModal';
 import EditItemModal from './modals/EditItemModal';
 import SellItemModal from './modals/SellItemModal';
+import '../styles/InventoryList.css'
 
 const InventoryList = () => {
   const navigate = useNavigate();
@@ -60,11 +61,12 @@ const InventoryList = () => {
 
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); //search bar
 
   const handleAddItem = async (newItem) => {
     try {
       setLoading(true);
-      const result = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/addInventory`, newItem, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/inventory/addInventory`, newItem, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -85,7 +87,7 @@ const InventoryList = () => {
         return;
       }
       setLoading(true);
-      const result = await axios.delete(`${process.env.REACT_APP_API_URL}/inventory/deleteInventory?itemName=${itemName}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/inventory/deleteInventory?itemName=${itemName}`, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -102,7 +104,7 @@ const InventoryList = () => {
   const handleEditItem = async (updatedItem) => {
     try {
       setLoading(true);
-      const result = await axios.put(`${process.env.REACT_APP_API_URL}/inventory/updateInventory`, updatedItem, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/inventory/updateInventory`, updatedItem, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -119,7 +121,7 @@ const InventoryList = () => {
   const handleSellItem = async (itemName, itemSold) => {
     try {
       setLoading(true);
-      const result = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/sellItem`, { itemName, itemSold }, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/inventory/sellItem`, { itemName, itemSold }, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -154,20 +156,36 @@ const InventoryList = () => {
           }
         });
         setData(result.data);
-        setInventoryData(inventoryresult.data.inventory.items);
+        if(searchTerm !== "") {
+
+          // Can use debounce to improve performance.
+          const filteredInventory = inventoryresult.data.inventory.items.filter(item => item.itemName.toLowerCase().includes(searchTerm.toLowerCase()));
+          setInventoryData(filteredInventory);
+        }else{
+          setInventoryData(inventoryresult.data.inventory.items);
+        }
+        
         setInventoryTransactions(inventoryresult.data.inventory.inventoryTransactions);
       } catch (error) {
         navigate("/"); //redirect to landing page
       }
     };
     fetchData();
-  }, [token, reload]); //re-run the effect if the tsoken changes
+  }, [token, reload, searchTerm]); //re-run the effect if the tsoken changes
 
 
   return (
     <>
       <NavbarUser userEmail={data.email} />
       <br/>
+      <FormControl
+        className="inventoryList-search"
+        type="text"
+        placeholder="Search by item name"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button variant="primary" onClick={handleShow}>
