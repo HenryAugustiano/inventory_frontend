@@ -4,11 +4,35 @@ import Cookies from 'universal-cookie';
 import { useNavigate } from "react-router-dom";
 import { Table, Button } from "react-bootstrap";
 import NavbarUser from "./Navbar";
+import AddItemModal from './modals/AddItemModa';
 
 const InventoryList = () => {
   const navigate = useNavigate();
   const cookies = new Cookies();
   const token = cookies.get("token");
+  //Add Item Modal
+  const [showModal, setShowModal] = useState(false);
+  const handleShow = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+  const [loading, setLoading] = useState(false);
+  const [reload, setReload] = useState(false);
+
+  const handleAddItem = async (newItem) => {
+    try {
+      setLoading(true);
+      const result = await axios.post(`${process.env.REACT_APP_API_URL}/inventory/addInventory`, newItem, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      setLoading(false);
+      setReload(!reload);
+    } catch (error) {
+      setLoading(false);
+      console.log('An error occured', error);
+    }
+  };
 
   //call the api
   const [data, setData] = useState([]);
@@ -38,12 +62,21 @@ const InventoryList = () => {
       }
     };
     fetchData();
-  }, [token]); //re-run the effect if the tsoken changes
+  }, [token, reload]); //re-run the effect if the tsoken changes
 
 
   return (
     <>
       <NavbarUser userEmail={data.email} />
+      <br/>
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="primary" onClick={handleShow}>
+            Add Item
+          </Button>
+        </div>
+      </div>
+      <br/>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -70,6 +103,8 @@ const InventoryList = () => {
           )}
         </tbody>
       </Table>
+
+      <AddItemModal showModal={showModal} handleClose={handleClose} handleAddItem={handleAddItem} />
     </>
   );
 };
