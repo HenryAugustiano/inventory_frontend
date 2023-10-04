@@ -8,7 +8,17 @@ const EditItemModal = ({ showModal, handleClose, handleEditItem, item }) => {
   const [itemDescription, setItemDescription] = useState('');
 
   const handleEdit = () => {
-    // Perform validation or additional logic here if needed
+    // Perform validation or additional logic
+    if(itemQuantity < 0 || itemPrice < 0){
+      alert('Please enter a valid positive integer');
+      return;
+    }
+
+    if(itemDescription.trim.length < 1){
+      alert('Please enter a valid description');
+      return;
+    }
+
     const updatedItem = {
       itemName,
       itemPrice,
