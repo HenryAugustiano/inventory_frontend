@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Table, Button } from "react-bootstrap";
 import NavbarUser from "./Navbar";
 import AddItemModal from './modals/AddItemModa';
+import InfoItemModal from './modals/InfoItemModal';
 
 const InventoryList = () => {
   const navigate = useNavigate();
@@ -14,6 +15,20 @@ const InventoryList = () => {
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
+  //Info Item Modal
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleShowInfoModal = (item) => {
+    setSelectedItem(item);
+    setShowInfoModal(true);
+  };
+
+  const handleCloseInfoModal = () => {
+    setSelectedItem(null);
+    setShowInfoModal(false);
+  };
+
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
 
@@ -82,6 +97,7 @@ const InventoryList = () => {
           <tr>
             <th>Item Name</th>
             <th>Quantity</th>
+            <th>Price</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -91,8 +107,9 @@ const InventoryList = () => {
               <tr key={item.itemName}>
                 <td>{item.itemName}</td>
                 <td>{item.itemQuantity}</td>
+                <td>{item.itemPrice}</td>
                 <td>
-                  <Button onClick={() => console.log(item)}>Info</Button>
+                  <Button variant="info" onClick={() => handleShowInfoModal(item)}>Info</Button>
                 </td>
               </tr>
             ))
@@ -105,6 +122,7 @@ const InventoryList = () => {
       </Table>
 
       <AddItemModal showModal={showModal} handleClose={handleClose} handleAddItem={handleAddItem} />
+      <InfoItemModal showModal={showInfoModal} handleClose={handleCloseInfoModal} item={selectedItem} inventoryTransactions={inventoryTransactions} />
     </>
   );
 };

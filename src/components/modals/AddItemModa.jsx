@@ -1,4 +1,3 @@
-// AddItemModal.js
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
