@@ -49,6 +49,24 @@ const InventoryList = () => {
     }
   };
 
+  const handleDeleteItem = async (itemName) => {
+    console.log(itemName);
+    try {
+      setLoading(true);
+      const result = await axios.delete(`${process.env.REACT_APP_API_URL}/inventory/deleteInventory?itemName=${itemName}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      setLoading(false);
+      setReload(!reload);
+    } catch (error) {
+      setLoading(false);
+      console.log('An error occured', error);
+    }
+  };
+
   //call the api
   const [data, setData] = useState([]);
   const [inventoryData, setInventoryData] = useState([]);
@@ -109,7 +127,8 @@ const InventoryList = () => {
                 <td>{item.itemQuantity}</td>
                 <td>{item.itemPrice}</td>
                 <td>
-                  <Button variant="info" onClick={() => handleShowInfoModal(item)}>Info</Button>
+                  <Button variant="info" onClick={() => handleShowInfoModal(item)}>Info</Button>{' '}
+                  <Button variant="danger" onClick={() => {handleDeleteItem(item.itemName)}}>Delete</Button>{' '}
                 </td>
               </tr>
             ))
