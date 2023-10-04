@@ -66,6 +66,10 @@ const InventoryList = () => {
 
   const handleDeleteItem = async (itemName) => {
     try {
+      const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+      if (!confirmDelete) {
+        return;
+      }
       setLoading(true);
       const result = await axios.delete(`${process.env.REACT_APP_API_URL}/inventory/deleteInventory?itemName=${itemName}`, {
         headers: {
