@@ -47,6 +47,7 @@ const EditItemModal = ({ showModal, handleClose, handleEditItem, item }) => {
             <Form.Control
               type="text"
               value={itemName}
+              disabled
               onChange={(e) => setItemName(e.target.value)}
             />
           </Form.Group>
