@@ -6,6 +6,9 @@ import { Table, Button } from "react-bootstrap";
 import NavbarUser from "./Navbar";
 import AddItemModal from './modals/AddItemModa';
 import InfoItemModal from './modals/InfoItemModal';
+import EditItemModal from './modals/EditItemModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faCircleInfo, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const InventoryList = () => {
   const navigate = useNavigate();
@@ -29,6 +32,19 @@ const InventoryList = () => {
     setShowInfoModal(false);
   };
 
+  //Edit Item Modal
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const handleShowEditModal = (item) => {
+    setSelectedItem(item);
+    setShowEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setSelectedItem(null);
+    setShowEditModal(false);
+  };
+
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
 
@@ -50,10 +66,26 @@ const InventoryList = () => {
   };
 
   const handleDeleteItem = async (itemName) => {
-    console.log(itemName);
     try {
       setLoading(true);
       const result = await axios.delete(`${process.env.REACT_APP_API_URL}/inventory/deleteInventory?itemName=${itemName}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      setLoading(false);
+      setReload(!reload);
+    } catch (error) {
+      setLoading(false);
+      console.log('An error occured', error);
+    }
+  };
+
+  const handleEditItem = async (updatedItem) => {
+    try {
+      setLoading(true);
+      const result = await axios.put(`${process.env.REACT_APP_API_URL}/inventory/updateInventory`, updatedItem, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -127,8 +159,10 @@ const InventoryList = () => {
                 <td>{item.itemQuantity}</td>
                 <td>{item.itemPrice}</td>
                 <td>
-                  <Button variant="info" onClick={() => handleShowInfoModal(item)}>Info</Button>{' '}
-                  <Button variant="danger" onClick={() => {handleDeleteItem(item.itemName)}}>Delete</Button>{' '}
+                  <Button variant="info" onClick={() => handleShowInfoModal(item)}><FontAwesomeIcon icon={faCircleInfo}  size='lg'/></Button>{' '}
+                  <Button variant="danger" onClick={() => {handleDeleteItem(item.itemName)}}><FontAwesomeIcon icon={faTrash} /></Button>{' '}
+                  <Button variant="warning" onClick={() => handleShowEditModal(item)}><FontAwesomeIcon icon={faEdit} size="lg" /></Button>{' '}
+
                 </td>
               </tr>
             ))
@@ -142,6 +176,7 @@ const InventoryList = () => {
 
       <AddItemModal showModal={showModal} handleClose={handleClose} handleAddItem={handleAddItem} />
       <InfoItemModal showModal={showInfoModal} handleClose={handleCloseInfoModal} item={selectedItem} inventoryTransactions={inventoryTransactions} />
+      <EditItemModal showModal={showEditModal} handleClose={handleCloseEditModal} item={selectedItem} handleEditItem={handleEditItem} />
     </>
   );
 };

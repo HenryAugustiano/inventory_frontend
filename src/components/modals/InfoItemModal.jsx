@@ -7,15 +7,12 @@ const InfoItemModal = ({ showModal, handleClose, item, inventoryTransactions }) 
   }
 
   const getQuantityItemSoldThisMonth = () => {
-    console.log(inventoryTransactions);
     const currMonth = new Date().getMonth() + 1;
     const currYear = new Date().getFullYear();
   
     const transaction = inventoryTransactions.find(
       (trans) => trans.month === currMonth && trans.year === currYear
     );
-    
-    console.log(transaction);
 
     if (transaction) {
       const soldItem = transaction.soldItems.find((soldItem) => soldItem.itemName === item.itemName);
