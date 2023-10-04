@@ -1,10 +1,16 @@
 import React from "react";
-import { Table, Button } from "react-bootstrap";
+import { Table, Button, OverlayTrigger, Tooltip  } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faCircleInfo, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faCircleInfo, faEdit, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 
 const InventoryTable = ({inventoryData, handleShowInfoModal, handleDeleteItem, handleShowEditModal }) => {
+  const renderTooltip = (text) => (
+    <Tooltip id="button-tooltip">
+      {text}
+    </Tooltip>
+  );
+
   return(
     <Table striped bordered hover>
       <thead>
@@ -23,10 +29,26 @@ const InventoryTable = ({inventoryData, handleShowInfoModal, handleDeleteItem, h
               <td>{item.itemQuantity}</td>
               <td>{item.itemPrice}</td>
               <td>
-                <Button variant="info" onClick={() => handleShowInfoModal(item)}><FontAwesomeIcon icon={faCircleInfo}  size='lg'/></Button>{' '}
-                <Button variant="danger" onClick={() => {handleDeleteItem(item.itemName)}}><FontAwesomeIcon icon={faTrash} /></Button>{' '}
-                <Button variant="warning" onClick={() => handleShowEditModal(item)}><FontAwesomeIcon icon={faEdit} size="lg" /></Button>{' '}
-
+                <OverlayTrigger placement="top" overlay={renderTooltip('View Info')}>
+                  <Button variant="info" onClick={() => handleShowInfoModal(item)}>
+                    <FontAwesomeIcon icon={faCircleInfo} size="lg" />
+                  </Button>
+                </OverlayTrigger>{' '}
+                <OverlayTrigger placement="top" overlay={renderTooltip('Edit Item')}>
+                  <Button variant="warning" onClick={() => handleShowEditModal(item)}>
+                    <FontAwesomeIcon icon={faEdit} size="lg" />
+                  </Button>
+                </OverlayTrigger>{' '}
+                <OverlayTrigger placement="top" overlay={renderTooltip('Sell Item')}>
+                  <Button variant="success">
+                    <FontAwesomeIcon icon={faShoppingCart} />
+                  </Button>
+                </OverlayTrigger>{' '}
+                <OverlayTrigger placement="top" overlay={renderTooltip('Delete Item')}>
+                  <Button variant="danger" onClick={() => handleDeleteItem(item.itemName)}>
+                    <FontAwesomeIcon icon={faTrash} />
+                  </Button>
+                </OverlayTrigger>{' '}
               </td>
             </tr>
           ))
