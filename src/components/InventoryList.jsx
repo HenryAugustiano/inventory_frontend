@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { useNavigate } from "react-router-dom";
-import { Table, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import NavbarUser from "./Navbar";
+import InventoryTable from './InventoryTable';
 import AddItemModal from './modals/AddItemModa';
 import InfoItemModal from './modals/InfoItemModal';
 import EditItemModal from './modals/EditItemModal';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faCircleInfo, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const InventoryList = () => {
   const navigate = useNavigate();
@@ -141,39 +140,8 @@ const InventoryList = () => {
           </Button>
         </div>
       </div>
-      <br/>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Item Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {inventoryData ? (
-            inventoryData.map((item) => (
-              <tr key={item.itemName}>
-                <td>{item.itemName}</td>
-                <td>{item.itemQuantity}</td>
-                <td>{item.itemPrice}</td>
-                <td>
-                  <Button variant="info" onClick={() => handleShowInfoModal(item)}><FontAwesomeIcon icon={faCircleInfo}  size='lg'/></Button>{' '}
-                  <Button variant="danger" onClick={() => {handleDeleteItem(item.itemName)}}><FontAwesomeIcon icon={faTrash} /></Button>{' '}
-                  <Button variant="warning" onClick={() => handleShowEditModal(item)}><FontAwesomeIcon icon={faEdit} size="lg" /></Button>{' '}
-
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="3">Loading...</td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
-
+      <InventoryTable inventoryData={inventoryData} handleDeleteItem={handleDeleteItem} handleShowInfoModal={handleShowInfoModal} handleShowEditModal={handleShowEditModal} />
+      {/* Modals */}
       <AddItemModal showModal={showModal} handleClose={handleClose} handleAddItem={handleAddItem} />
       <InfoItemModal showModal={showInfoModal} handleClose={handleCloseInfoModal} item={selectedItem} inventoryTransactions={inventoryTransactions} />
       <EditItemModal showModal={showEditModal} handleClose={handleCloseEditModal} item={selectedItem} handleEditItem={handleEditItem} />
