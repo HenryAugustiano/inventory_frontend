@@ -14,7 +14,7 @@ const EditItemModal = ({ showModal, handleClose, handleEditItem, item }) => {
       return;
     }
 
-    if(itemDescription.trim.length < 1){
+    if(itemDescription.trim().length < 1){
       alert('Please enter a valid description');
       return;
     }
