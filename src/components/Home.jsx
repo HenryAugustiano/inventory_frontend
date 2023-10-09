@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import NavbarUser from './Navbar';
+import { useNavigate } from "react-router-dom";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import InventoryChart from "./InventoryChart";
+import NearbyBusiness from './NearbyBusiness';
+
+
 const Home = () => {
 
+  const navigate = useNavigate();
   const cookies = new Cookies();
   const token = cookies.get("token");
 
@@ -10,23 +18,36 @@ const Home = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`${process.env.REACT_APP_API_URL}/users/info`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      setData(result.data);
+      try {
+        const result = await axios.get(`${process.env.REACT_APP_API_URL}/users/info`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        setData(result.data);
+      } catch (error) {
+        navigate("/"); //redirect to landing page
+      }
     };
     fetchData();
-  }, [token]);
+  }, [token]); //re-run the effect if the token changes
 
   return (
     <div>
-      <h1>Home</h1>
-      <p>Home page content</p>
-      <p>Your token is: {token}</p>
-      your data is {JSON.stringify(data)}
+      <NavbarUser userEmail={data.email} />
+      <br/>
+      <Row>
+        <Col>
+          <h2 style={{textAlign: 'center'}}>Top Item Of The Month</h2>
+          <InventoryChart token={token} />
+        </Col>
+        <Col>
+          <h2 style={{textAlign: 'center'}}>Find Nearby Buyer </h2>
+            <NearbyBusiness />
+        </Col>
+      </Row>
+
     </div>
   );
 };

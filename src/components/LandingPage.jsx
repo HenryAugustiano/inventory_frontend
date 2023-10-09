@@ -3,97 +3,59 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
-import cloudBg from "../images/cloudBackground.png";
+import "../styles/LandingPage.css";
+import bg from "../images/cloud.png";
+
+//Bootstrap
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
+import Spinner from 'react-bootstrap/Spinner';
 
 function LandingPage() {
-  // Modal variable
-  const [showSignIn, setShowSignIn] = useState(false);
-  const triggerModalSignIn = () => {
-    setShowSignIn(!showSignIn);
-  };
-
   const navigate = useNavigate();
-  const handleLoginSuccess = () => {
-    navigate("/home");
-  };
-
-
-
-
-  return (
-    <>
-      {/* Modal */}
-      <ModalSignIn
-        title="Sign In"
-        showModal={showSignIn}
-        setShowModal={triggerModalSignIn}
-        handleLoginSuccess={handleLoginSuccess}
-      />
-
-      <div 
-      className="flex justify-center items-center h-screen"
-      style={{ 
-        backgroundImage: `url(${cloudBg})`, 
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-      }}
-      >
-        <div className="bg-white p-8 rounded-lg shadow-md flex flex-col items-center text-center">
-          <h1 className="text-3xl font-bold mb-4">
-            Welcome to Cloud Inventory
-          </h1>
-          <p className="text-gray-600">Your professional inventory storage.</p>
-          <div className="mt-8">
-            <button className="bg-green-500 text-white px-4 py-2 rounded-md mr-4"
-              onClick={() => triggerModalSignIn()}
-            >
-              Sign In
-            </button>
-            <button className="bg-sky-500 text-white px-4 py-2 rounded-md">
-              Create Account
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function ModalSignIn({ showModal, setShowModal, title, handleLoginSuccess }) {
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  //Sign In Modal
+  const [showSignIn, setShowSignIn] = useState(false);
+  const handleCloseSignIn = () => {
+    setShowSignIn(false);
+    setEmail("");
+    setPassword("");
+    setSignInResponse("");
+  }
+  const handleShowSignIn = () => setShowSignIn(true);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [statusMessage, setStatusMessage] = React.useState("");
+  const [signInResponse, setSignInResponse] = React.useState("");
 
-  // Form validation
-  const [emailError, setEmailError] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState("");
+  //Sign Up Modal
+  const [showSignUp, setShowSignUp] = useState(false);
+  const handleCloseSignUp = () => {
+    setShowSignUp(false);
+    setEmailSignUp("");
+    setPasswordSignUp("");
+    setSignUpResponse("");
+  }
+  const handleShowSignUp = () => setShowSignUp(true);
+  const [emailSignUp, setEmailSignUp] = React.useState("");
+  const [passwordSignUp, setPasswordSignUp] = React.useState("");
+  const [signUpResponse, setSignUpResponse] = React.useState("");
 
-  React.useEffect(() => {
-    // Check if the modal is open
-    if (showModal) {
-      // Reset the state
-      setEmail("");
-      setPassword("");
-    }
-  }, [showModal]);
-
-  const handleSubmit = async (e) => {
+  const handleSubmitSignIn = async (e) => {
     try {
+      //reset error message
+      setSignInResponse("");
+      
       e.preventDefault();
-      let isValidate = true;
+      let validated = true;
 
-      // Validate input
-      if (email === "") {
-        setEmailError("Email is required");
-        isValidate = false;
-      }
-      if (password === "") {
-        setPasswordError("Password is required");
-        isValidate = false;
-      }
+      if(email === "" || password === ""){
+        validated = false;
+      };
 
-      if (!isValidate) {
-        return; // don't submit
+      if (!validated) {
+        return;
       }
 
       let body = {
@@ -101,187 +63,226 @@ function ModalSignIn({ showModal, setShowModal, title, handleLoginSuccess }) {
         password: password,
       };
 
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, body, {
-      headers: {
-        'Content-Type': 'application/json',
-      }});
-      
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/users/login`,
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       const cookies = new Cookies();
       cookies.set("token", response.data.token, {
         path: "/",
       });
 
       // Navigate to home page
-      handleLoginSuccess();
-      
-      // Reset form after successful submission
-      setEmail("");
-      setPassword("");
-
-      // Reset error messages
-      setEmailError("");
-      setPasswordError("");
-      setStatusMessage("");
+      navigate("/home");
 
       console.log("Login success");
       console.log(response.data);
 
-      setShowModal(false);
+      setShowSignIn(false);
+      setEmail("");
+      setPassword("");
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message === "No user found"
-      ) {
-        console.error("User not found. Please check your credentials.");
-      } else {
-        // Handle other errors
-        console.error("An error occurred:", error);
-      }
+      console.error("An error occurred:", error);
+      setSignInResponse("Invalid email or password");
+      setEmail("");
+      setPassword("");
     }
   };
+  const handleSubmitSignUp = async (e) => {
+    try {
+      //reset error message
+      setSignUpResponse("");
+      
+      e.preventDefault();
+      let validated = true;
+      if(emailSignUp === "" || passwordSignUp === ""){
+        validated = false;
+      };
 
-  if (!showModal) return null;
-return (
-  <>
-    <div
-      style={{
-        position: "fixed",
-        zIndex: "99",
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <div
-        style={{ backgroundColor: "white" }}
-        className="flex justify-center items-center rounded-lg"
+      if (!validated) {
+        return;
+      }
+
+      let body = {
+        email: emailSignUp,
+        password: passwordSignUp,
+      };
+
+      setLoading(true);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/users/register`,
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setLoading(false);
+      setSuccess(true);
+
+      console.log("Register success");
+      console.log(response.data);
+
+      //Delay the modal closing to show success checkmark
+      setTimeout(() => {
+        setShowSignUp(false);
+        setEmailSignUp("");
+        setPasswordSignUp("");
+        setSuccess(false);
+      }, 3000);
+
+    } catch (error) {
+      setLoading(false);
+      console.error("An error occurred:", error);
+      setSignUpResponse(error.response.data.message || "An error occurred");
+      setEmail("");
+      setPassword("");
+    }
+  };
+  return (
+    <>
+      {/* Sign In Modal */}
+      <Modal
+        show={showSignIn}
+        onHide={handleCloseSignIn}
+        backdrop="static"
+        keyboard={false}
+        centered
       >
-        <div className="relative w-auto my-6 mx-auto max-w-xl">
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-              <h3
-                className="text-3xl font-semibold"
-                style={{ color: statusMessage !== "" ? "red" : "black" }}
-              >
-                {statusMessage || title}
-              </h3>
-              {/* Upper right 'x' button */}
-              <button
-                type="button"
-                className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                onClick={() => {
-                  setShowModal(false);
-                  //reset value
-                  setEmail("");
-                  setPassword("");
+        <Modal.Header closeButton>
+          <Modal.Title style={{ color: signInResponse ? 'red' : 'black' }}>
+            {signInResponse === "" ? "Sign In" : signInResponse}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </Form.Group>
 
-                  //reset error
-                  setStatusMessage("");
-                  setEmailError("");
-                  setPasswordError("");
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseSignIn}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSubmitSignIn}>
+            Sign In
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      {/* Sign Up Modal */}
+      <Modal
+        show={showSignUp}
+        onHide={handleCloseSignUp}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title style={{ color: signUpResponse ? 'red' : 'black' }}>
+            {signUpResponse === "" ? "Sign Up" : signUpResponse}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={emailSignUp}
+                onChange={(e) => setEmailSignUp(e.target.value)}
+                required
+              />
+            </Form.Group>
 
-                  setShowModal(false);
-                }}
-              >
-                <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                  ×
-                </span>
-              </button>
-            </div>
-            {/* body */}
-            <form onSubmit={handleSubmit}>
-              <div
-                style={{ overflow: "auto", maxHeight: "400px" }}
-                className="flex flex-col p-5 flex-auto gap-6"
-              >
-                {/* ROW 1 */}
-                <div className="flex gap-6">
-                  <div style={{ width: "500px" }}>
-                    <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      email
-                      {emailError && (
-                        <span style={{ color: "red" }}>
-                          {" "}
-                          ({emailError})
-                        </span>
-                      )}
-                    </label>
-                    <input
-                      type="email"
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (e.target.value !== "") setEmailError("");
-                      }}
-                    />
-                  </div>
-                  <div style={{ width: "500px" }}>
-                    <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      password
-                      {passwordError && (
-                        <span style={{ color: "red" }}>
-                          {" "}
-                          ({passwordError})
-                        </span>
-                      )}
-                    </label>
-                    <input
-                      type="password"
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                        if (e.target.value !== "") setPasswordError("");
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={passwordSignUp}
+                onChange={(e) => setPasswordSignUp(e.target.value)}
+                required
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          {loading ? (
+            <Spinner animation="border" variant="primary" />
+          ) : success ? (
+            <span style={{ color: 'green'}}>success ✓</span>
+          ) : (
+            <Button variant="secondary" onClick={handleCloseSignUp}>
+              Close
+            </Button>
+          )}
+          {!success && !loading && (
+            <Button variant="primary" onClick={handleSubmitSignUp}>
+              Sign Up
+            </Button>
+          )}
+        </Modal.Footer>
+      </Modal>
 
-              <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                <button
-                  className="bg-red-600 text-white font-bold uppercase px-6 py-2 text-sm rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                  type="button"
-                  onClick={() => {
-                    setShowModal(false);
-                    //reset value
-                    setEmail("");
-                    setPassword("");
-
-                    //reset error
-                    setStatusMessage("");
-                    setEmailError("");
-                    setPasswordError("");
-                  }}
-                >
-                  Close
-                </button>
-                <button
-                 className="bg-emerald-600  text-white font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                 type="button"
-                  onClick={handleSubmit}
-                >
-                  Sign In
-                </button>
-              </div>
-            </form>
+      {/* Landing Page */}
+      <div
+        className="flex-container"
+        style={{
+          backgroundImage: `url(${bg})`,
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="card">
+          <h1 className="title">Welcome to Cloud Inventory</h1>
+          <p className="subtitle">Your professional inventory storage.</p>
+          <div className="buttons-container">
+            <button
+              className="sign-in-button"
+              onClick={() => handleShowSignIn()}
+            >
+              Sign In
+            </button>
+            <button 
+              className="create-account-button"
+              onClick={() => handleShowSignUp()}
+            >
+              Create Account
+            </button>
           </div>
         </div>
       </div>
-    </div>
-  </>
-);
-
+    </>
+  );
 }
 
 export default LandingPage;
