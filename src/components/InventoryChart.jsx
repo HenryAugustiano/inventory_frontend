@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import Chart from 'chart.js/auto'; 
+import { Alert } from "react-bootstrap";
 
 const InventoryChart = ({ token }) => {
   const [chartData, setChartData] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +43,9 @@ const InventoryChart = ({ token }) => {
         };
 
         setChartData(data);
+        setError(false);
       } catch (error) {
+        setError(true);
         console.error("An error occurred while fetching data:", error);
       }
     };
@@ -75,7 +79,15 @@ const InventoryChart = ({ token }) => {
 
   return (
     <div>
-      {chartData && <Bar data={chartData} options={options} />}
+      {error ? (
+         <Alert variant="danger" style={{ textAlign: 'center' }}>
+          <Alert.Heading>No transaction found for the current month</Alert.Heading>
+        </Alert>
+      ) : (
+        <div>
+        {chartData && <Bar data={chartData} options={options} />}
+       </div> 
+      )}
     </div>
   );
 };
